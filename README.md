@@ -1,16 +1,80 @@
-# React + Vite
+# NextStep AI 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Your next career move starts here.**
 
-Currently, two official plugins are available:
+NextStep AI is a job search and career preparation tool designed to help job seekers better understand job opportunities, evaluate how their experience aligns with job requirements, and prepare for their next career move.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The goal is to create a centralized, user-friendly experience that makes navigating the job search process easier and more organized.
 
-## React Compiler
+> **Project Status:** In Development
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Features
 
-## Expanding the ESLint configuration
+### 📊 Dashboard
+A centralized dashboard that gives users an overview of their job search and provides quick access to the application's main features.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 🔍 Job Analysis
+Analyze job descriptions to better understand role requirements and identify the skills, qualifications, and experience employers are looking for.
+
+### 🎯 Career Insights
+Help users understand how their existing skills and experience align with potential opportunities and identify areas for improvement.
+
+### 💼 Job Search Organization
+Provide a structured way to manage the job search process and keep important career information accessible.
+
+*Features are subject to change as development progresses.*
+
+## 🛠️ Tech Stack
+
+NextStep AI is being built with modern frontend technologies.
+
+- **React** — Component-based user interface
+- **TypeScript** — Static typing and improved code reliability
+- **Vite** — Development server and build tooling
+- **CSS / SCSS** — Styling and responsive layouts
+
+Additional technologies and integrations may be introduced as the project develops.
+
+## 🚀 Getting Started
+
+Follow these instructions to run the project locally.
+
+### Prerequisites
+
+You'll need the following installed:
+
+- [Node.js](https://nodejs.org/)
+- npm (included with Node.js)
+- Git
+
+### Installation
+
+**1. Clone the repository**
+
+```bash
+git clone <your-repository-url>
+```
+
+**2. Navigate to the project directory**
+
+```bash
+cd <your-project-directory>
+```
+
+**3. Install dependencies**
+
+```bash
+npm install
+```
+
+**4. Start the development server**
+
+```bash
+npm run dev
+```
+
+**5. Open the application**
+
+Vite will display a local URL in your terminal, typically:
+
+```text
