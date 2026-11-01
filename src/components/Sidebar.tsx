@@ -10,11 +10,11 @@ const navigationItems: { label: string; to: string; icon: IconName }[] = [
 function Sidebar() {
   return (
     <aside className="sidebar">
-      <Link className="brand" to="/" aria-label="NextStep AI home">
+      <Link className="brand" to="/" aria-label="Next Step AI home">
         <span className="brand__mark">
           <Icon name="sparkles" />
         </span>
-        <span>NextStep AI</span>
+        <span>Next Step AI</span>
       </Link>
 
       <nav className="sidebar__nav" aria-label="Main navigation">

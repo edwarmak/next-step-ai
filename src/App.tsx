@@ -47,7 +47,7 @@ function App() {
             element={
               <PagePlaceholder
                 title="Settings"
-                description="Manage your NextStep workspace and preferences here. Settings will be available soon."
+                description="Manage your RoleReady workspace and preferences here. Settings will be available soon."
               />
             }
           />
