@@ -1,9 +1,10 @@
-import AnalyzeJobCard from "./components/AnalyzeJobCard";
+import AnalyzeJobCard from "./components/JobAnalysis/AnalyzeJobCard";
 import RecentJobs from "./components/RecentJobs";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PagePlaceholder from "./components/PagePlaceholder";
+import JobAnalysis from "./pages/JobAnalysis";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 
@@ -26,12 +27,7 @@ function App() {
           />
           <Route
             path="/analyze"
-            element={
-              <PagePlaceholder
-                title="Analyze a job"
-                description="Your job analysis workspace is coming soon. You’ll be able to bring a job description and resume together to see what to highlight in your application."
-              />
-            }
+            element={<JobAnalysis />}
           />
           <Route
             path="/applications"
