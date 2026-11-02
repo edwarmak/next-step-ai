@@ -7,6 +7,10 @@ import type { ResumeExtractionStatus } from '../../components/JobAnalysis/Resume
 import type { JobAnalysisDetails } from '../../types/jobAnalysis'
 import { saveJobAnalysis } from '../../services/jobAnalysisService'
 import { saveResume } from '../../services/resumeService'
+import {
+  JobAnalysisPersistenceError,
+  persistJobAnalysis,
+} from '../../services/jobAnalysisWorkflow'
 import type { SavedResume } from '../../types/resume'
 import './JobAnalysis.css'
 
@@ -137,20 +141,73 @@ function JobAnalysis() {
     setIsSavingAnalysis(true)
     setSaveAnalysisError('')
     setSaveAnalysisMessage('')
+    setSaveError('')
+    setSaveMessage('')
 
     try {
-      const resumeId =
+      if (
+        (resumeFile || selectedSavedResume) &&
+        extractionStatus !== 'success'
+      ) {
+        throw new Error(
+          'Wait for the resume to finish processing before saving the job analysis.',
+        )
+      }
+
+      const activeResume =
         selectedSavedResume?.user_id === user.id
-          ? selectedSavedResume.id
-          : null
-      await saveJobAnalysis(user.id, details, resumeId)
+          ? { kind: 'saved' as const, id: selectedSavedResume.id }
+          : resumeFile
+            ? {
+                kind: 'uploaded' as const,
+                fileName: resumeFile.name,
+                extractedText: extractedResumeText,
+              }
+            : null
+
+      const { savedResume } = await persistJobAnalysis(
+        user.id,
+        details,
+        activeResume,
+        {
+          saveResume,
+          saveJobAnalysis,
+        },
+      )
+      if (savedResume) {
+        setSelectedSavedResume(savedResume)
+        setResumeFile(null)
+        setSavedResumesRefreshKey((key) => key + 1)
+        setSaveMessage('Resume saved to your account.')
+      }
       setSaveAnalysisMessage('Job analysis saved to your account.')
     } catch (error) {
-      setSaveAnalysisError(
-        error instanceof Error
-          ? error.message
-          : 'We couldn’t save this job analysis. Please try again.',
-      )
+      if (error instanceof JobAnalysisPersistenceError) {
+        if (error.savedResume) {
+          setSelectedSavedResume(error.savedResume)
+          setResumeFile(null)
+          setSavedResumesRefreshKey((key) => key + 1)
+          setSaveMessage('Resume saved to your account.')
+        }
+
+        const causeMessage =
+          error.originalError instanceof Error
+            ? ` ${error.originalError.message}`
+            : ''
+        setSaveAnalysisError(
+          error.stage === 'resume'
+            ? `${error.message}${causeMessage}`
+            : error.resumeIsSaved
+              ? `Your resume is saved to your account, but the job analysis was not saved.${causeMessage}`
+              : `${error.message}${causeMessage}`,
+        )
+      } else {
+        setSaveAnalysisError(
+          error instanceof Error
+            ? error.message
+            : 'We couldn’t save this job analysis. Please try again.',
+        )
+      }
     } finally {
       saveAnalysisRequest.current = false
       setIsSavingAnalysis(false)

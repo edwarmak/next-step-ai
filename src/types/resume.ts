@@ -7,6 +7,7 @@ export type SavedResume = {
   display_name: string
   file_type: ResumeFileType
   extracted_text: string
+  content_fingerprint: string
   created_at: string
   updated_at: string
 }

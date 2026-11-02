@@ -1,8 +1,10 @@
 import { supabase } from '../lib/supabaseClient'
 import type { NewSavedResume, SavedResume } from '../types/resume'
+import { createResumeFingerprint } from './resumeFingerprint'
+import { findOrCreateResume } from './resumePersistence'
 
 const RESUME_COLUMNS =
-  'id,user_id,file_name,display_name,file_type,extracted_text,created_at,updated_at'
+  'id,user_id,file_name,display_name,file_type,extracted_text,content_fingerprint,created_at,updated_at'
 
 export async function listSavedResumes(userId: string): Promise<SavedResume[]> {
   const { data, error } = await supabase
@@ -21,17 +23,44 @@ export async function listSavedResumes(userId: string): Promise<SavedResume[]> {
 export async function saveResume(
   resume: NewSavedResume,
 ): Promise<SavedResume> {
-  const { data, error } = await supabase
-    .from('resumes')
-    .insert(resume)
-    .select(RESUME_COLUMNS)
-    .single()
+  const contentFingerprint = await createResumeFingerprint(
+    resume.extracted_text,
+  )
 
-  if (error) {
-    throw error
-  }
+  return findOrCreateResume({
+    findByFingerprint: async () => {
+      const { data, error } = await supabase
+        .from('resumes')
+        .select(RESUME_COLUMNS)
+        .eq('user_id', resume.user_id)
+        .eq('content_fingerprint', contentFingerprint)
+        .maybeSingle()
 
-  return data as SavedResume
+      if (error) {
+        throw error
+      }
+
+      return data as SavedResume | null
+    },
+    insert: async () => {
+      const { data, error } = await supabase
+        .from('resumes')
+        .insert({ ...resume, content_fingerprint: contentFingerprint })
+        .select(RESUME_COLUMNS)
+        .single()
+
+      if (error) {
+        throw error
+      }
+
+      return data as SavedResume
+    },
+    isUniqueViolation: (error) =>
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      error.code === '23505',
+  })
 }
 
 export async function renameSavedResume(
