@@ -1,5 +1,7 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
-import ResumeUpload from './ResumeUpload'
+import ResumeUpload, {
+  type ResumeExtractionStatus,
+} from './ResumeUpload'
 
 type JobDetails = {
   jobTitle: string
@@ -11,6 +13,9 @@ type FieldErrors = Partial<Record<keyof JobDetails, string>>
 
 type JobAnalysisFormProps = {
   resumeFile: File | null
+  extractedResumeText: string
+  extractionStatus: ResumeExtractionStatus
+  extractionError: string
   onResumeFileChange: (file: File | null) => void
 }
 
@@ -38,6 +43,9 @@ function validateJobDetails(details: JobDetails): FieldErrors {
 
 function JobAnalysisForm({
   resumeFile,
+  extractedResumeText,
+  extractionStatus,
+  extractionError,
   onResumeFileChange,
 }: JobAnalysisFormProps) {
   const [jobDetails, setJobDetails] = useState<JobDetails>({
@@ -86,6 +94,10 @@ function JobAnalysisForm({
     const firstInvalidField = fieldOrder.find((field) => nextErrors[field])
     if (firstInvalidField) {
       fieldRefs.current[firstInvalidField]?.focus()
+      return
+    }
+
+    if (resumeFile && extractionStatus !== 'success') {
       return
     }
 
@@ -193,7 +205,13 @@ function JobAnalysisForm({
         )}
       </div>
 
-      <ResumeUpload file={resumeFile} onFileChange={onResumeFileChange} />
+      <ResumeUpload
+        file={resumeFile}
+        extractedText={extractedResumeText}
+        extractionStatus={extractionStatus}
+        extractionError={extractionError}
+        onFileChange={onResumeFileChange}
+      />
 
       <button
         className="primary-button job-analysis-form__submit"

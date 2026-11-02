@@ -519,6 +519,17 @@
   background: #f1eefb;
 }
 
+.resume-upload__status {
+  margin: 0;
+  color: #716779;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.resume-upload__status--success {
+  color: #315d42;
+}
+
 .welcome {
   margin-bottom: 31px;
 }
@@ -1230,6 +1241,7 @@
   .resume-upload__remove {
     padding: 0 8px;
   }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
