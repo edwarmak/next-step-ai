@@ -10,6 +10,7 @@ import type { SavedResume } from '../../types/resume'
 
 type SavedResumeManagerProps = {
   onSelect?: (resume: SavedResume) => void
+  onDeleted?: (resumeId: string) => void
   selectedResumeId?: string
   refreshKey?: number
 }
@@ -22,6 +23,7 @@ function formatDate(date: string) {
 
 function SavedResumeManager({
   onSelect,
+  onDeleted,
   selectedResumeId,
   refreshKey = 0,
 }: SavedResumeManagerProps) {
@@ -127,6 +129,7 @@ function SavedResumeManager({
       setResumes((current) =>
         current.filter((savedResume) => savedResume.id !== resume.id),
       )
+      onDeleted?.(resume.id)
     } catch {
       setActionError('We couldn’t delete that resume. Please try again.')
     } finally {

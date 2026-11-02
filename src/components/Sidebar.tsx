@@ -7,7 +7,7 @@ import { supabase } from '../lib/supabaseClient'
 const navigationItems: { label: string; to: string; icon: IconName }[] = [
   { label: 'Dashboard', to: '/', icon: 'grid' },
   { label: 'Job Analysis', to: '/analyze', icon: 'sparkles' },
-  { label: 'Saved Jobs', to: '/applications', icon: 'briefcase' },
+  { label: 'Saved Resumes', to: '/applications', icon: 'briefcase' },
 ]
 
 function Sidebar() {
@@ -56,11 +56,6 @@ function Sidebar() {
           >
             <Icon name={item.icon} />
             <span>{item.label}</span>
-            {item.label === 'Saved Jobs' && (
-              <span className="nav-link__count" aria-label="0 saved jobs">
-                0
-              </span>
-            )}
           </NavLink>
         ))}
       </nav>

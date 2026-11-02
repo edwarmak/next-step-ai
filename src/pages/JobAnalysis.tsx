@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import JobAnalysisForm from '../components/JobAnalysis/JobAnalysisForm'
@@ -22,6 +22,20 @@ function JobAnalysis() {
   const [savedResumesRefreshKey, setSavedResumesRefreshKey] = useState(0)
   const saveRequest = useRef(false)
   const extractionRequest = useRef(0)
+
+  useEffect(() => {
+    if (!selectedSavedResume || selectedSavedResume.user_id === user?.id) {
+      return
+    }
+
+    extractionRequest.current += 1
+    setSelectedSavedResume(null)
+    setExtractedResumeText('')
+    setExtractionStatus('idle')
+    setExtractionError('')
+    setSaveError('')
+    setSaveMessage('')
+  }, [selectedSavedResume, user?.id])
 
   async function handleResumeFileChange(file: File | null) {
     const requestId = extractionRequest.current + 1
@@ -69,6 +83,20 @@ function JobAnalysis() {
     setSelectedSavedResume(resume)
     setExtractedResumeText(resume.extracted_text)
     setExtractionStatus('success')
+    setExtractionError('')
+    setSaveError('')
+    setSaveMessage('')
+  }
+
+  function handleSavedResumeDeleted(resumeId: string) {
+    if (selectedSavedResume?.id !== resumeId) {
+      return
+    }
+
+    extractionRequest.current += 1
+    setSelectedSavedResume(null)
+    setExtractedResumeText('')
+    setExtractionStatus('idle')
     setExtractionError('')
     setSaveError('')
     setSaveMessage('')
@@ -125,6 +153,13 @@ function JobAnalysis() {
     }
   }
 
+  const activeSavedResume =
+    selectedSavedResume?.user_id === user?.id ? selectedSavedResume : null
+  const activeExtractedResumeText =
+    selectedSavedResume && !activeSavedResume ? '' : extractedResumeText
+  const activeExtractionStatus =
+    selectedSavedResume && !activeSavedResume ? 'idle' : extractionStatus
+
   return (
     <div className="job-analysis-page">
       <header className="job-analysis-page__heading">
@@ -137,15 +172,15 @@ function JobAnalysis() {
       </header>
       <JobAnalysisForm
         resumeFile={resumeFile}
-        extractedResumeText={extractedResumeText}
-        extractionStatus={extractionStatus}
+        extractedResumeText={activeExtractedResumeText}
+        extractionStatus={activeExtractionStatus}
         extractionError={extractionError}
         onResumeFileChange={handleResumeFileChange}
       />
       {resumeFile && extractionStatus === 'success' && !isAuthLoading && (
         <div className="resume-save">
           {user ? (
-            selectedSavedResume ? (
+            activeSavedResume ? (
               <p className="resume-save__message" role="status">
                 Resume saved to your account.{' '}
                 <Link to="/applications">Manage saved resumes</Link>
@@ -171,21 +206,22 @@ function JobAnalysis() {
               {saveError}
             </p>
           )}
-          {saveMessage && !selectedSavedResume && (
+          {saveMessage && !activeSavedResume && (
             <p className="resume-save__message" role="status">
               {saveMessage}
             </p>
           )}
         </div>
       )}
-      {selectedSavedResume && (
+      {activeSavedResume && (
         <p className="resume-save__message resume-save__selected" role="status">
-          Using “{selectedSavedResume.display_name}” from your account.
+          Using “{activeSavedResume.display_name}” from your account.
         </p>
       )}
       <SavedResumeManager
         onSelect={handleSelectSavedResume}
-        selectedResumeId={selectedSavedResume?.id}
+        onDeleted={handleSavedResumeDeleted}
+        selectedResumeId={activeSavedResume?.id}
         refreshKey={savedResumesRefreshKey}
       />
     </div>
