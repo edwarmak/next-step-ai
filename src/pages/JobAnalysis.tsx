@@ -1,21 +1,37 @@
 import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import JobAnalysisForm from '../components/JobAnalysis/JobAnalysisForm'
+import SavedResumeManager from '../components/JobAnalysis/SavedResumeManager'
 import type { ResumeExtractionStatus } from '../components/JobAnalysis/ResumeUpload'
+import { saveResume } from '../services/resumeService'
+import type { SavedResume } from '../types/resume'
 
 function JobAnalysis() {
+  const { user, isLoading: isAuthLoading } = useAuth()
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [extractedResumeText, setExtractedResumeText] = useState('')
   const [extractionStatus, setExtractionStatus] =
     useState<ResumeExtractionStatus>('idle')
   const [extractionError, setExtractionError] = useState('')
+  const [selectedSavedResume, setSelectedSavedResume] =
+    useState<SavedResume | null>(null)
+  const [isSavingResume, setIsSavingResume] = useState(false)
+  const [saveError, setSaveError] = useState('')
+  const [saveMessage, setSaveMessage] = useState('')
+  const [savedResumesRefreshKey, setSavedResumesRefreshKey] = useState(0)
+  const saveRequest = useRef(false)
   const extractionRequest = useRef(0)
 
   async function handleResumeFileChange(file: File | null) {
     const requestId = extractionRequest.current + 1
     extractionRequest.current = requestId
     setResumeFile(file)
+    setSelectedSavedResume(null)
     setExtractedResumeText('')
     setExtractionError('')
+    setSaveError('')
+    setSaveMessage('')
 
     if (!file) {
       setExtractionStatus('idle')
@@ -47,6 +63,68 @@ function JobAnalysis() {
     }
   }
 
+  function handleSelectSavedResume(resume: SavedResume) {
+    extractionRequest.current += 1
+    setResumeFile(null)
+    setSelectedSavedResume(resume)
+    setExtractedResumeText(resume.extracted_text)
+    setExtractionStatus('success')
+    setExtractionError('')
+    setSaveError('')
+    setSaveMessage('')
+  }
+
+  async function handleSaveResume() {
+    if (
+      !user ||
+      !resumeFile ||
+      extractionStatus !== 'success' ||
+      saveRequest.current
+    ) {
+      return
+    }
+
+    if (extractedResumeText.length > 100_000) {
+      setSaveError(
+        'This resume’s extracted text is over the 100,000 character limit and cannot be saved.',
+      )
+      return
+    }
+
+    saveRequest.current = true
+    setIsSavingResume(true)
+    setSaveError('')
+    setSaveMessage('')
+
+    try {
+      const fileType = resumeFile.name.split('.').pop()?.toLowerCase()
+      if (fileType !== 'pdf' && fileType !== 'docx') {
+        throw new Error('Only PDF and DOCX resumes can be saved.')
+      }
+
+      const savedResume = await saveResume({
+        user_id: user.id,
+        file_name: resumeFile.name,
+        display_name: resumeFile.name,
+        file_type: fileType,
+        extracted_text: extractedResumeText,
+      })
+
+      setSelectedSavedResume(savedResume)
+      setSaveMessage('Resume saved to your account.')
+      setSavedResumesRefreshKey((key) => key + 1)
+    } catch (error) {
+      setSaveError(
+        error instanceof Error
+          ? error.message
+          : 'We couldn’t save this resume. Please try again.',
+      )
+    } finally {
+      saveRequest.current = false
+      setIsSavingResume(false)
+    }
+  }
+
   return (
     <div className="job-analysis-page">
       <header className="job-analysis-page__heading">
@@ -63,6 +141,52 @@ function JobAnalysis() {
         extractionStatus={extractionStatus}
         extractionError={extractionError}
         onResumeFileChange={handleResumeFileChange}
+      />
+      {resumeFile && extractionStatus === 'success' && !isAuthLoading && (
+        <div className="resume-save">
+          {user ? (
+            selectedSavedResume ? (
+              <p className="resume-save__message" role="status">
+                Resume saved to your account.{' '}
+                <Link to="/applications">Manage saved resumes</Link>
+              </p>
+            ) : (
+              <button
+                className="primary-button resume-save__button"
+                disabled={isSavingResume}
+                onClick={() => void handleSaveResume()}
+                type="button"
+              >
+                {isSavingResume ? 'Saving resume…' : 'Save to account'}
+              </button>
+            )
+          ) : (
+            <p className="resume-save__message">
+              Want to reuse this resume on another device?{' '}
+              <Link to="/auth">Sign in</Link> to save it to your account.
+            </p>
+          )}
+          {saveError && (
+            <p className="saved-resumes__error" role="alert">
+              {saveError}
+            </p>
+          )}
+          {saveMessage && !selectedSavedResume && (
+            <p className="resume-save__message" role="status">
+              {saveMessage}
+            </p>
+          )}
+        </div>
+      )}
+      {selectedSavedResume && (
+        <p className="resume-save__message resume-save__selected" role="status">
+          Using “{selectedSavedResume.display_name}” from your account.
+        </p>
+      )}
+      <SavedResumeManager
+        onSelect={handleSelectSavedResume}
+        selectedResumeId={selectedSavedResume?.id}
+        refreshKey={savedResumesRefreshKey}
       />
     </div>
   )

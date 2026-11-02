@@ -1,5 +1,8 @@
 import Icon, { type IconName } from './Icon'
 import { Link, NavLink } from 'react-router-dom'
+import { useState } from 'react'
+import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabaseClient'
 
 const navigationItems: { label: string; to: string; icon: IconName }[] = [
   { label: 'Dashboard', to: '/', icon: 'grid' },
@@ -8,6 +11,29 @@ const navigationItems: { label: string; to: string; icon: IconName }[] = [
 ]
 
 function Sidebar() {
+  const { user, isLoading: isAuthLoading, error: sessionError } = useAuth()
+  const [isSigningOut, setIsSigningOut] = useState(false)
+  const [signOutError, setSignOutError] = useState('')
+
+  async function handleSignOut() {
+    setSignOutError('')
+    setIsSigningOut(true)
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        throw error
+      }
+    } catch (error) {
+      setSignOutError(
+        error instanceof Error
+          ? error.message
+          : 'We couldn’t sign you out. Please try again.',
+      )
+    } finally {
+      setIsSigningOut(false)
+    }
+  }
+
   return (
     <aside className="sidebar">
       <Link className="brand" to="/" aria-label="NextStep AI home">
@@ -58,17 +84,53 @@ function Sidebar() {
           <Icon name="settings" />
           <span>Settings</span>
         </NavLink>
+        <Link className="nav-link" to="/auth">
+          <Icon name="sparkles" />
+          <span>{user ? 'Account' : 'Sign in'}</span>
+        </Link>
+        {user && (
+          <button
+            className="sidebar__mobile-sign-out"
+            disabled={isSigningOut}
+            onClick={handleSignOut}
+            type="button"
+          >
+            {isSigningOut ? 'Signing out…' : 'Log out'}
+          </button>
+        )}
+        {(sessionError || signOutError) && (
+          <p className="sidebar__auth-error" role="alert">
+            {signOutError || sessionError}
+          </p>
+        )}
         <div className="sidebar__profile">
           <span className="profile-avatar" aria-hidden="true">
-            RR
+            {user?.email?.slice(0, 2).toUpperCase() ?? 'RR'}
           </span>
           <span className="sidebar__profile-copy">
-            <strong>Your workspace</strong>
-            <span>Personal account</span>
+            <strong>
+              {isAuthLoading
+                ? 'Checking session…'
+                : user
+                  ? user.email
+                  : 'Guest workspace'}
+            </strong>
+            <span>{user ? 'Signed in' : 'Personal account'}</span>
           </span>
-          <span className="profile-menu" aria-hidden="true">
-            ···
-          </span>
+          {user ? (
+            <button
+              className="sidebar__sign-out"
+              disabled={isSigningOut}
+              onClick={handleSignOut}
+              type="button"
+            >
+              {isSigningOut ? '…' : 'Log out'}
+            </button>
+          ) : (
+            <span className="profile-menu" aria-hidden="true">
+              ···
+            </span>
+          )}
         </div>
       </div>
     </aside>

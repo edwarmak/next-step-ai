@@ -5,6 +5,8 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PagePlaceholder from "./components/PagePlaceholder";
 import JobAnalysis from "./pages/JobAnalysis";
+import SavedResumes from "./pages/SavedResumes";
+import AuthPage from "./pages/AuthPage";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 
@@ -31,12 +33,7 @@ function App() {
           />
           <Route
             path="/applications"
-            element={
-              <PagePlaceholder
-                title="My Applications"
-                description="Keep your job search organized in one place. Applications you save and analyze will be collected here."
-              />
-            }
+            element={<SavedResumes />}
           />
           <Route
             path="/settings"
@@ -47,6 +44,7 @@ function App() {
               />
             }
           />
+          <Route path="/auth" element={<AuthPage />} />
           <Route
             path="*"
             element={
