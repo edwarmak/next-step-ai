@@ -1,8 +1,9 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
-import type { JobAnalysisDetails } from '../../types/jobAnalysis'
+import type { JobAnalysisDetails } from '../../../types/jobAnalysis'
 import ResumeUpload, {
   type ResumeExtractionStatus,
-} from './ResumeUpload'
+} from '../ResumeUpload/ResumeUpload'
+import './JobAnalysisForm.css'
 
 type FieldErrors = Partial<Record<keyof JobAnalysisDetails, string>>
 

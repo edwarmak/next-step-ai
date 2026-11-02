@@ -1,0 +1,78 @@
+.sidebar__label,
+.eyebrow {
+  margin: 0;
+  color: #a09da6;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.15px;
+}
+.job-analysis-page__heading {
+  margin-bottom: 25px;
+}
+.job-analysis-page__heading .eyebrow {
+  margin-bottom: 9px;
+  color: #7965c8;
+}
+.job-analysis-page__title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 32px);
+  font-weight: 700;
+  letter-spacing: -1.15px;
+  line-height: 1.25;
+}
+.job-analysis-page__description {
+  max-width: 610px;
+  margin: 8px 0 0;
+  color: #85828b;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.resume-save__message a,
+.saved-resumes__message a {
+  color: #654bc2;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.welcome h1,
+.analyze-card h2,
+.section-heading h2 {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+}
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 15px;
+  margin-top: 19px;
+  color: #45347d;
+  background: #fff;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 3px 8px #2c216629;
+  transition: transform 150ms ease,
+    box-shadow 150ms ease;
+}
+.primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px #2c21663d;
+}
+.primary-button svg,
+.text-link svg,
+.empty-state__link svg {
+  width: 15px;
+  height: 15px;
+}
+.text-link:hover,
+.empty-state__link:hover {
+  color: #4d369e;
+}

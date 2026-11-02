@@ -1,5 +1,6 @@
-import Icon from '../Icon'
+import Icon from '../../Icon/Icon'
 import { Link } from 'react-router-dom'
+import './AnalyzeJobCard.css'
 
 function AnalyzeJobCard() {
   return (

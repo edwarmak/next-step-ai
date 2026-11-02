@@ -1,4 +1,4 @@
-import SavedResumeManager from '../components/JobAnalysis/SavedResumeManager'
+import SavedResumeManager from '../../components/JobAnalysis/SavedResumeManager/SavedResumeManager'
 
 function SavedResumes() {
   return (

@@ -1,12 +1,13 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../../contexts/AuthContext'
+import { useAuth } from '../../../contexts/AuthContext'
 import {
   deleteSavedResume,
   listSavedResumes,
   renameSavedResume,
-} from '../../services/resumeService'
-import type { SavedResume } from '../../types/resume'
+} from '../../../services/resumeService'
+import type { SavedResume } from '../../../types/resume'
+import './SavedResumeManager.css'
 
 type SavedResumeManagerProps = {
   onSelect?: (resume: SavedResume) => void

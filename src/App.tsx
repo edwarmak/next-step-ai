@@ -1,14 +1,14 @@
-import AnalyzeJobCard from "./components/JobAnalysis/AnalyzeJobCard";
-import RecentJobs from "./components/RecentJobs";
-import Sidebar from "./components/Sidebar";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import PagePlaceholder from "./components/PagePlaceholder";
-import JobAnalysis from "./pages/JobAnalysis";
-import SavedResumes from "./pages/SavedResumes";
-import SavedJobs from "./pages/SavedJobs";
-import SavedJobDetails from "./pages/SavedJobDetails";
-import AuthPage from "./pages/AuthPage";
+import AnalyzeJobCard from "./components/JobAnalysis/AnalyzeJobCard/AnalyzeJobCard";
+import RecentJobs from "./components/RecentJobs/RecentJobs";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
+import PagePlaceholder from "./components/PagePlaceholder/PagePlaceholder";
+import JobAnalysis from "./pages/JobAnalysis/JobAnalysis";
+import SavedResumes from "./pages/SavedResumes/SavedResumes";
+import SavedJobs from "./pages/SavedJobs/SavedJobs";
+import SavedJobDetails from "./pages/SavedJobDetails/SavedJobDetails";
+import AuthPage from "./pages/AuthPage/AuthPage";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 

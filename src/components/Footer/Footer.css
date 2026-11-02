@@ -1,0 +1,27 @@
+.dashboard-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+  margin-top: 23px;
+  color: #a09da6;
+  border-top: 1px solid #ebe9ed;
+  font-size: 9px;
+}
+.dashboard-footer__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dashboard-footer__status > span {
+  width: 6px;
+  height: 6px;
+  background: #62bb82;
+  border-radius: 50%;
+}
+@media (max-width: 560px) {
+  .dashboard-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabaseClient'
-import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../../lib/supabaseClient'
+import { useAuth } from '../../contexts/AuthContext'
+import './AuthPage.css'
 
 type AuthMode = 'login' | 'signup'
 

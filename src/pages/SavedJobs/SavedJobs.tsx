@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import { deleteJobAnalysis, listJobAnalyses } from '../services/jobAnalysisService'
-import type { SavedJobAnalysis } from '../types/jobAnalysis'
+import { useAuth } from '../../contexts/AuthContext'
+import { deleteJobAnalysis, listJobAnalyses } from '../../services/jobAnalysisService'
+import type { SavedJobAnalysis } from '../../types/jobAnalysis'
+import './SavedJobs.css'
 
 function formatDate(date: string) {
   return new Intl.DateTimeFormat(undefined, {

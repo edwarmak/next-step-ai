@@ -1,0 +1,33 @@
+.placeholder-page {
+  width: min(100%, 1032px);
+  margin: 0 auto;
+  padding-top: 15px;
+}
+.placeholder-page > .eyebrow {
+  margin-bottom: 9px;
+  color: #7965c8;
+}
+.placeholder-page__title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 32px);
+  font-weight: 700;
+  letter-spacing: -1.15px;
+  line-height: 1.25;
+}
+.placeholder-page__description {
+  max-width: 580px;
+  margin: 8px 0 0;
+  color: #85828b;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.placeholder-page__back {
+  margin-top: 22px;
+  color: #fff;
+  background: #7153d9;
+}
+.placeholder-page__back:hover {
+  box-shadow: 0 6px 15px #7153d94d;
+}

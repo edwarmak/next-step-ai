@@ -1,8 +1,9 @@
-import Icon, { type IconName } from './Icon'
+import Icon, { type IconName } from '../Icon/Icon'
 import { Link, NavLink } from 'react-router-dom'
 import { useState } from 'react'
-import { useAuth } from '../contexts/AuthContext'
-import { supabase } from '../lib/supabaseClient'
+import { useAuth } from '../../contexts/AuthContext'
+import { supabase } from '../../lib/supabaseClient'
+import './Sidebar.css'
 
 const navigationItems: { label: string; to: string; icon: IconName }[] = [
   { label: 'Dashboard', to: '/', icon: 'grid' },

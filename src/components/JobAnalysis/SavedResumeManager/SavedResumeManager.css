@@ -1,0 +1,162 @@
+.saved-resumes {
+  display: grid;
+  gap: 15px;
+  width: min(100%, 1032px);
+  padding: 22px;
+  margin: 24px auto 0;
+  background: #fff;
+  border: 1px solid #eeedf0;
+  border-radius: 12px;
+}
+.saved-resumes__heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+}
+.saved-resumes__heading .eyebrow {
+  margin-bottom: 6px;
+  color: #7965c8;
+}
+.saved-resumes__title {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.saved-resumes__message,
+.saved-resumes__error {
+  margin: 0;
+  padding: 13px 14px;
+  color: #716779;
+  background: #fbfaff;
+  border: 1px solid #e8e4f2;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.saved-resumes__message p {
+  margin: 0 0 6px;
+}
+.saved-resumes__error {
+  color: #a42f3e;
+  background: #fff8f8;
+  border-color: #f0d9dc;
+}
+.saved-resumes__list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.saved-resumes__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding: 14px;
+  background: #fbfaff;
+  border: 1px solid #e8e4f2;
+  border-radius: 9px;
+}
+.saved-resumes__details {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+.saved-resumes__name {
+  overflow-wrap: anywhere;
+  color: #38353e;
+  font-size: 12px;
+  font-weight: 600;
+}
+.saved-resumes__metadata {
+  color: #85818b;
+  font-size: 10px;
+}
+.saved-resumes__actions,
+.saved-resumes__rename-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+.saved-resumes__rename-form {
+  justify-content: flex-start;
+}
+.saved-resumes__rename-form .job-analysis-form__input {
+  width: min(100%, 300px);
+  min-height: 38px;
+  padding: 8px 10px;
+}
+.saved-resumes__action {
+  min-height: 34px;
+  padding: 0 10px;
+  color: #fff;
+  background: #7153d9;
+  border: 1px solid #7153d9;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+}
+.saved-resumes__action:hover:not(:disabled) {
+  background: #6045c3;
+}
+.saved-resumes__action:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.saved-resumes__action--quiet {
+  color: #654bc2;
+  background: transparent;
+  border-color: #ded8f0;
+}
+.saved-resumes__action--quiet:hover:not(:disabled) {
+  color: #4d369e;
+  background: #f1eefb;
+}
+.saved-resumes__action--danger {
+  color: #a42f3e;
+  background: #fff;
+  border-color: #f0d9dc;
+}
+.saved-resumes__action--danger:hover:not(:disabled) {
+  background: #fff2f3;
+}
+.saved-resumes__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .saved-resumes {
+    gap: 12px;
+    padding: 17px 13px;
+  }
+  .saved-resumes__item {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+  .saved-resumes__actions {
+    justify-content: flex-start;
+  }
+  .saved-resumes__rename-form {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .saved-resumes__rename-form .job-analysis-form__input {
+    width: 100%;
+  }
+}

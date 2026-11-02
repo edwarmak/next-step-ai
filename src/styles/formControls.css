@@ -1,0 +1,61 @@
+.job-analysis-form__field {
+  display: grid;
+  gap: 8px;
+}
+.job-analysis-form__label {
+  color: #494650;
+  font-size: 12px;
+  font-weight: 600;
+}
+.job-analysis-form__required {
+  margin-left: 4px;
+  color: #827e89;
+  font-size: 10px;
+  font-weight: 400;
+}
+.job-analysis-form__optional {
+  margin-left: 4px;
+  color: #827e89;
+  font-size: 10px;
+  font-weight: 400;
+}
+.job-analysis-form__input {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 12px;
+  color: var(--color-ink);
+  background: #fff;
+  border: 1px solid #dedce3;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  transition: border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+.job-analysis-form__input::placeholder {
+  color: #918d97;
+}
+.job-analysis-form__input:focus {
+  border-color: #8068d1;
+  outline: none;
+  box-shadow: 0 0 0 3px #7153d91a;
+}
+.job-analysis-form__input[aria-invalid='true'] {
+  border-color: #b94150;
+}
+.job-analysis-form__textarea {
+  min-height: 210px;
+  resize: vertical;
+  line-height: 1.6;
+}
+.job-analysis-form__error {
+  margin: 0;
+  color: #a42f3e;
+  font-size: 11px;
+  line-height: 1.45;
+}
+@media (max-width: 560px) {
+  .job-analysis-form__textarea {
+    min-height: 180px;
+  }
+}

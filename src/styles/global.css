@@ -50,3 +50,12 @@ a:focus-visible {
   color: #35236f;
   background: #e2dcfa;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

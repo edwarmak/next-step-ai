@@ -1,0 +1,41 @@
+.job-analysis-form {
+  display: grid;
+  gap: 20px;
+  padding: 28px;
+  background: #fff;
+  border: 1px solid #eeedf0;
+  border-radius: 12px;
+}
+.job-analysis-form__submit {
+  justify-self: start;
+  min-height: 44px;
+  margin-top: 0;
+  color: #fff;
+  background: #7153d9;
+}
+.job-analysis-form__submit:hover {
+  background: #6045c3;
+  box-shadow: 0 6px 15px #7153d94d;
+}
+.job-analysis-form__save {
+  justify-self: start;
+}
+.job-analysis-form__save:disabled {
+  cursor: default;
+}
+.job-analysis-form__status {
+  margin: 0;
+  padding: 12px 14px;
+  color: #315d42;
+  background: #eef8f1;
+  border: 1px solid #d5ecdc;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media (max-width: 560px) {
+  .job-analysis-form {
+    gap: 17px;
+    padding: 20px 16px;
+  }
+}

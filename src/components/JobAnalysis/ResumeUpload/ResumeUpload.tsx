@@ -1,5 +1,6 @@
 import { useRef, useState, type ChangeEvent, type DragEvent } from 'react'
-import Icon from '../Icon'
+import Icon from '../../Icon/Icon'
+import './ResumeUpload.css'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024
 const ACCEPTED_EXTENSIONS = ['pdf', 'docx']

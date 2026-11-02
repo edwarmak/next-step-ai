@@ -1,0 +1,31 @@
+.welcome {
+  margin-bottom: 31px;
+}
+.welcome .eyebrow {
+  margin-bottom: 9px;
+  color: #7965c8;
+}
+.welcome h1 {
+  font-size: clamp(26px, 3vw, 32px);
+  font-weight: 700;
+  letter-spacing: -1.15px;
+  line-height: 1.25;
+}
+.welcome__description {
+  max-width: 580px;
+  margin: 8px 0 0;
+  color: #85828b;
+  font-size: 13px;
+  line-height: 1.65;
+}
+@media (max-width: 760px) {
+  .welcome {
+    margin-bottom: 24px;
+  }
+}
+@media (max-width: 560px) {
+  .welcome__description {
+    max-width: 400px;
+    font-size: 12px;
+  }
+}

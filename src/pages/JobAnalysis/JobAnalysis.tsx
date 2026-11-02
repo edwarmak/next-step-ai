@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import JobAnalysisForm from '../components/JobAnalysis/JobAnalysisForm'
-import SavedResumeManager from '../components/JobAnalysis/SavedResumeManager'
-import type { ResumeExtractionStatus } from '../components/JobAnalysis/ResumeUpload'
-import type { JobAnalysisDetails } from '../types/jobAnalysis'
-import { saveJobAnalysis } from '../services/jobAnalysisService'
-import { saveResume } from '../services/resumeService'
-import type { SavedResume } from '../types/resume'
+import { useAuth } from '../../contexts/AuthContext'
+import JobAnalysisForm from '../../components/JobAnalysis/JobAnalysisForm/JobAnalysisForm'
+import SavedResumeManager from '../../components/JobAnalysis/SavedResumeManager/SavedResumeManager'
+import type { ResumeExtractionStatus } from '../../components/JobAnalysis/ResumeUpload/ResumeUpload'
+import type { JobAnalysisDetails } from '../../types/jobAnalysis'
+import { saveJobAnalysis } from '../../services/jobAnalysisService'
+import { saveResume } from '../../services/resumeService'
+import type { SavedResume } from '../../types/resume'
+import './JobAnalysis.css'
 
 function JobAnalysis() {
   const { user, isLoading: isAuthLoading } = useAuth()
@@ -70,7 +71,7 @@ function JobAnalysis() {
     setExtractionStatus('loading')
 
     try {
-      const { extractResumeText } = await import('../services/resumeParser')
+      const { extractResumeText } = await import('../../services/resumeParser')
       const text = await extractResumeText(file)
       if (extractionRequest.current !== requestId) {
         return
