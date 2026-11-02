@@ -312,7 +312,7 @@ function JobAnalysis() {
                 onClick={() => void handleSaveResume()}
                 type="button"
               >
-                {isSavingResume ? 'Saving resume…' : 'Save to account'}
+                {isSavingResume ? 'Saving resume…' : 'Save resume to account'}
               </button>
             )
           ) : (
