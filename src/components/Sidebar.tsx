@@ -7,7 +7,8 @@ import { supabase } from '../lib/supabaseClient'
 const navigationItems: { label: string; to: string; icon: IconName }[] = [
   { label: 'Dashboard', to: '/', icon: 'grid' },
   { label: 'Job Analysis', to: '/analyze', icon: 'sparkles' },
-  { label: 'Saved Resumes', to: '/applications', icon: 'briefcase' },
+  { label: 'Saved Jobs', to: '/applications', icon: 'briefcase' },
+  { label: 'Saved Resumes', to: '/resumes', icon: 'file' },
 ]
 
 function Sidebar() {

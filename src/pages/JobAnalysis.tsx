@@ -4,11 +4,18 @@ import { useAuth } from '../contexts/AuthContext'
 import JobAnalysisForm from '../components/JobAnalysis/JobAnalysisForm'
 import SavedResumeManager from '../components/JobAnalysis/SavedResumeManager'
 import type { ResumeExtractionStatus } from '../components/JobAnalysis/ResumeUpload'
+import type { JobAnalysisDetails } from '../types/jobAnalysis'
+import { saveJobAnalysis } from '../services/jobAnalysisService'
 import { saveResume } from '../services/resumeService'
 import type { SavedResume } from '../types/resume'
 
 function JobAnalysis() {
   const { user, isLoading: isAuthLoading } = useAuth()
+  const [jobDetails, setJobDetails] = useState<JobAnalysisDetails>({
+    jobTitle: '',
+    companyName: '',
+    jobDescription: '',
+  })
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [extractedResumeText, setExtractedResumeText] = useState('')
   const [extractionStatus, setExtractionStatus] =
@@ -20,7 +27,11 @@ function JobAnalysis() {
   const [saveError, setSaveError] = useState('')
   const [saveMessage, setSaveMessage] = useState('')
   const [savedResumesRefreshKey, setSavedResumesRefreshKey] = useState(0)
+  const [isSavingAnalysis, setIsSavingAnalysis] = useState(false)
+  const [saveAnalysisError, setSaveAnalysisError] = useState('')
+  const [saveAnalysisMessage, setSaveAnalysisMessage] = useState('')
   const saveRequest = useRef(false)
+  const saveAnalysisRequest = useRef(false)
   const extractionRequest = useRef(0)
 
   useEffect(() => {
@@ -35,6 +46,8 @@ function JobAnalysis() {
     setExtractionError('')
     setSaveError('')
     setSaveMessage('')
+    setSaveAnalysisError('')
+    setSaveAnalysisMessage('')
   }, [selectedSavedResume, user?.id])
 
   async function handleResumeFileChange(file: File | null) {
@@ -46,6 +59,8 @@ function JobAnalysis() {
     setExtractionError('')
     setSaveError('')
     setSaveMessage('')
+    setSaveAnalysisError('')
+    setSaveAnalysisMessage('')
 
     if (!file) {
       setExtractionStatus('idle')
@@ -86,6 +101,8 @@ function JobAnalysis() {
     setExtractionError('')
     setSaveError('')
     setSaveMessage('')
+    setSaveAnalysisError('')
+    setSaveAnalysisMessage('')
   }
 
   function handleSavedResumeDeleted(resumeId: string) {
@@ -100,6 +117,43 @@ function JobAnalysis() {
     setExtractionError('')
     setSaveError('')
     setSaveMessage('')
+    setSaveAnalysisError('')
+    setSaveAnalysisMessage('')
+  }
+
+  function handleJobDetailsChange(details: JobAnalysisDetails) {
+    setJobDetails(details)
+    setSaveAnalysisError('')
+    setSaveAnalysisMessage('')
+  }
+
+  async function handleSaveAnalysis(details: JobAnalysisDetails) {
+    if (!user || saveAnalysisRequest.current) {
+      return
+    }
+
+    saveAnalysisRequest.current = true
+    setIsSavingAnalysis(true)
+    setSaveAnalysisError('')
+    setSaveAnalysisMessage('')
+
+    try {
+      const resumeId =
+        selectedSavedResume?.user_id === user.id
+          ? selectedSavedResume.id
+          : null
+      await saveJobAnalysis(user.id, details, resumeId)
+      setSaveAnalysisMessage('Job analysis saved to your account.')
+    } catch (error) {
+      setSaveAnalysisError(
+        error instanceof Error
+          ? error.message
+          : 'We couldn’t save this job analysis. Please try again.',
+      )
+    } finally {
+      saveAnalysisRequest.current = false
+      setIsSavingAnalysis(false)
+    }
   }
 
   async function handleSaveResume() {
@@ -171,11 +225,19 @@ function JobAnalysis() {
         </p>
       </header>
       <JobAnalysisForm
+        jobDetails={jobDetails}
+        onJobDetailsChange={handleJobDetailsChange}
         resumeFile={resumeFile}
         extractedResumeText={activeExtractedResumeText}
         extractionStatus={activeExtractionStatus}
         extractionError={extractionError}
         onResumeFileChange={handleResumeFileChange}
+        onSaveAnalysis={
+          user && !isAuthLoading ? handleSaveAnalysis : undefined
+        }
+        isSavingAnalysis={isSavingAnalysis}
+        saveAnalysisMessage={saveAnalysisMessage}
+        saveAnalysisError={saveAnalysisError}
       />
       {resumeFile && extractionStatus === 'success' && !isAuthLoading && (
         <div className="resume-save">
@@ -183,7 +245,7 @@ function JobAnalysis() {
             activeSavedResume ? (
               <p className="resume-save__message" role="status">
                 Resume saved to your account.{' '}
-                <Link to="/applications">Manage saved resumes</Link>
+                <Link to="/resumes">Manage saved resumes</Link>
               </p>
             ) : (
               <button

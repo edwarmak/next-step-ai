@@ -1,37 +1,38 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
+import type { JobAnalysisDetails } from '../../types/jobAnalysis'
 import ResumeUpload, {
   type ResumeExtractionStatus,
 } from './ResumeUpload'
 
-type JobDetails = {
-  jobTitle: string
-  companyName: string
-  jobDescription: string
-}
-
-type FieldErrors = Partial<Record<keyof JobDetails, string>>
+type FieldErrors = Partial<Record<keyof JobAnalysisDetails, string>>
 
 type JobAnalysisFormProps = {
+  jobDetails: JobAnalysisDetails
+  onJobDetailsChange: (details: JobAnalysisDetails) => void
   resumeFile: File | null
   extractedResumeText: string
   extractionStatus: ResumeExtractionStatus
   extractionError: string
   onResumeFileChange: (file: File | null) => void
+  onSaveAnalysis?: (details: JobAnalysisDetails) => void
+  isSavingAnalysis?: boolean
+  saveAnalysisMessage?: string
+  saveAnalysisError?: string
 }
 
-const fieldOrder: (keyof JobDetails)[] = [
+const fieldOrder: (keyof JobAnalysisDetails)[] = [
   'jobTitle',
   'companyName',
   'jobDescription',
 ]
 
-const fieldLabels: Record<keyof JobDetails, string> = {
+const fieldLabels: Record<keyof JobAnalysisDetails, string> = {
   jobTitle: 'Job title',
   companyName: 'Company name',
   jobDescription: 'Job description',
 }
 
-function validateJobDetails(details: JobDetails): FieldErrors {
+function validateJobDetails(details: JobAnalysisDetails): FieldErrors {
   return fieldOrder.reduce<FieldErrors>((errors, field) => {
     if (!details[field].trim()) {
       errors[field] = `${fieldLabels[field]} is required.`
@@ -42,21 +43,25 @@ function validateJobDetails(details: JobDetails): FieldErrors {
 }
 
 function JobAnalysisForm({
+  jobDetails,
+  onJobDetailsChange,
   resumeFile,
   extractedResumeText,
   extractionStatus,
   extractionError,
   onResumeFileChange,
+  onSaveAnalysis,
+  isSavingAnalysis = false,
+  saveAnalysisMessage = '',
+  saveAnalysisError = '',
 }: JobAnalysisFormProps) {
-  const [jobDetails, setJobDetails] = useState<JobDetails>({
-    jobTitle: '',
-    companyName: '',
-    jobDescription: '',
-  })
   const [errors, setErrors] = useState<FieldErrors>({})
   const [statusMessage, setStatusMessage] = useState('')
   const fieldRefs = useRef<
-    Record<keyof JobDetails, HTMLInputElement | HTMLTextAreaElement | null>
+    Record<
+      keyof JobAnalysisDetails,
+      HTMLInputElement | HTMLTextAreaElement | null
+    >
   >({
     jobTitle: null,
     companyName: null,
@@ -64,14 +69,14 @@ function JobAnalysisForm({
   })
 
   function handleChange(
-    field: keyof JobDetails,
+    field: keyof JobAnalysisDetails,
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
     const value = event.currentTarget.value
-    setJobDetails((currentDetails) => ({
-      ...currentDetails,
+    onJobDetailsChange({
+      ...jobDetails,
       [field]: value,
-    }))
+    })
     setStatusMessage('')
     setErrors((currentErrors) => {
       if (!currentErrors[field] || !value.trim()) {
@@ -84,16 +89,24 @@ function JobAnalysisForm({
     })
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
+  function validateAndFocus() {
     const nextErrors = validateJobDetails(jobDetails)
     setErrors(nextErrors)
-    setStatusMessage('')
 
     const firstInvalidField = fieldOrder.find((field) => nextErrors[field])
     if (firstInvalidField) {
       fieldRefs.current[firstInvalidField]?.focus()
+      return false
+    }
+
+    return true
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setStatusMessage('')
+
+    if (!validateAndFocus()) {
       return
     }
 
@@ -104,6 +117,13 @@ function JobAnalysisForm({
     setStatusMessage(
       'Your job details are ready. Analysis results will be available in a future update.',
     )
+  }
+
+  function handleSaveAnalysis() {
+    setStatusMessage('')
+    if (validateAndFocus()) {
+      onSaveAnalysis?.(jobDetails)
+    }
   }
 
   return (
@@ -219,9 +239,33 @@ function JobAnalysisForm({
       >
         Analyze Job
       </button>
+      {onSaveAnalysis && (
+        <button
+          className="saved-resumes__action job-analysis-form__save"
+          disabled={isSavingAnalysis || Boolean(saveAnalysisMessage)}
+          onClick={handleSaveAnalysis}
+          type="button"
+        >
+          {isSavingAnalysis
+            ? 'Saving job…'
+            : saveAnalysisMessage
+              ? 'Saved'
+              : 'Save job analysis'}
+        </button>
+      )}
       {statusMessage && (
         <p className="job-analysis-form__status" role="status">
           {statusMessage}
+        </p>
+      )}
+      {saveAnalysisMessage && (
+        <p className="job-analysis-form__status" role="status">
+          {saveAnalysisMessage}
+        </p>
+      )}
+      {saveAnalysisError && (
+        <p className="job-analysis-form__error" role="alert">
+          {saveAnalysisError}
         </p>
       )}
     </form>

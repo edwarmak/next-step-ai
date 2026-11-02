@@ -6,6 +6,8 @@ import Footer from "./components/Footer";
 import PagePlaceholder from "./components/PagePlaceholder";
 import JobAnalysis from "./pages/JobAnalysis";
 import SavedResumes from "./pages/SavedResumes";
+import SavedJobs from "./pages/SavedJobs";
+import SavedJobDetails from "./pages/SavedJobDetails";
 import AuthPage from "./pages/AuthPage";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
@@ -33,6 +35,14 @@ function App() {
           />
           <Route
             path="/applications"
+            element={<SavedJobs />}
+          />
+          <Route
+            path="/applications/:analysisId"
+            element={<SavedJobDetails />}
+          />
+          <Route
+            path="/resumes"
             element={<SavedResumes />}
           />
           <Route
