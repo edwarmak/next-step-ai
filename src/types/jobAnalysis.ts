@@ -11,6 +11,7 @@ export type SavedJobAnalysis = {
   job_title: string
   company_name: string
   job_description: string
+  analyzed_at: string | null
   created_at: string
   updated_at: string
   resume_name: string | null

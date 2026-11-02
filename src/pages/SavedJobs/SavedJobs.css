@@ -40,6 +40,19 @@
   justify-content: center;
   text-decoration: none;
 }
+.saved-resumes__message .saved-resumes__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 8px 14px;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: center;
+  text-decoration: none;
+}
 @media (max-width: 560px) {
   .saved-jobs {
     gap: 12px;

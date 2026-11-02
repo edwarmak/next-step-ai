@@ -5,6 +5,10 @@ import {
   deleteJobAnalysis,
   getJobAnalysis,
 } from '../../services/jobAnalysisService'
+import {
+  getGuestSavedJob,
+  type GuestSavedJob,
+} from '../../services/guestSavedJobService'
 import type { SavedJobAnalysis } from '../../types/jobAnalysis'
 import './SavedJobDetails.css'
 
@@ -20,6 +24,7 @@ function SavedJobDetails() {
   const navigate = useNavigate()
   const { user, isLoading: isAuthLoading } = useAuth()
   const [analysis, setAnalysis] = useState<SavedJobAnalysis | null>(null)
+  const [guestJob, setGuestJob] = useState<GuestSavedJob | null>(null)
   const [loadedKey, setLoadedKey] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [loadError, setLoadError] = useState('')
@@ -27,17 +32,55 @@ function SavedJobDetails() {
   const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
-    if (!user || !analysisId) {
+    if (isAuthLoading) {
       setAnalysis(null)
+      setGuestJob(null)
       setLoadedKey('')
       setIsLoading(false)
       setLoadError('')
       return
     }
 
+    if (!analysisId) {
+      setAnalysis(null)
+      setGuestJob(null)
+      setLoadedKey('')
+      setIsLoading(false)
+      setLoadError('')
+      return
+    }
+
+    if (!user) {
+      const requestKey = `guest:${analysisId}`
+      setAnalysis(null)
+      setLoadedKey('')
+      setIsLoading(false)
+      setLoadError('')
+      setDeleteError('')
+
+      try {
+        const savedGuestJob = getGuestSavedJob(analysisId)
+        if (savedGuestJob) {
+          setGuestJob(savedGuestJob)
+        } else {
+          setGuestJob(null)
+          setLoadError(
+            'We couldn’t find this saved job in the current browser session.',
+          )
+        }
+      } catch {
+        setGuestJob(null)
+        setLoadError('We couldn’t load this saved job from the current session.')
+      }
+
+      setLoadedKey(requestKey)
+      return
+    }
+
     let active = true
     const requestKey = `${user.id}:${analysisId}`
     setAnalysis(null)
+    setGuestJob(null)
     setLoadedKey('')
     setIsLoading(true)
     setLoadError('')
@@ -65,7 +108,7 @@ function SavedJobDetails() {
     return () => {
       active = false
     }
-  }, [user?.id, analysisId])
+  }, [isAuthLoading, user?.id, analysisId])
 
   async function handleDelete() {
     if (!user || !analysis || isDeleting) {
@@ -93,6 +136,11 @@ function SavedJobDetails() {
 
   const isLoadedForCurrentUser =
     Boolean(user && analysisId) && loadedKey === `${user?.id}:${analysisId}`
+  const isLoadedForGuest =
+    !isAuthLoading &&
+    !user &&
+    Boolean(analysisId) &&
+    loadedKey === `guest:${analysisId}`
 
   return (
     <div className="saved-job-details-page">
@@ -100,7 +148,7 @@ function SavedJobDetails() {
         <p className="eyebrow">YOUR WORKSPACE</p>
         <h1 className="job-analysis-page__title">Saved Job</h1>
         <p className="job-analysis-page__description">
-          Review the job information saved to your account.
+          Review the job information you saved.
         </p>
       </header>
 
@@ -108,15 +156,6 @@ function SavedJobDetails() {
         <p className="saved-resumes__message" role="status">
           Checking your account…
         </p>
-      )}
-
-      {!isAuthLoading && !user && (
-        <div className="saved-resumes">
-          <p className="saved-resumes__message">
-            Sign in to view saved jobs in your account.
-          </p>
-          <Link to="/auth">Sign in</Link>
-        </div>
       )}
 
       {user && isLoading && (
@@ -155,10 +194,6 @@ function SavedJobDetails() {
             {analysis.resume_name ?? 'No saved resume attached'}
           </p>
 
-          <p className="saved-resumes__message">
-            AI analysis results are not available yet.
-          </p>
-
           {deleteError && (
             <p className="saved-resumes__error" role="alert">
               {deleteError}
@@ -185,6 +220,43 @@ function SavedJobDetails() {
         <Link className="saved-job-details__back" to="/applications">
           Back to saved jobs
         </Link>
+      )}
+
+      {!user && isLoadedForGuest && loadError && (
+        <p className="saved-resumes__error" role="alert">
+          {loadError}
+        </p>
+      )}
+
+      {!user && isLoadedForGuest && guestJob && (
+        <article className="saved-job-details">
+          <div className="saved-job-details__heading">
+            <div>
+              <h2>{guestJob.job_title}</h2>
+              <p>{guestJob.company_name}</p>
+            </div>
+            <span className="saved-resumes__metadata">
+              Saved {formatDate(guestJob.created_at)}
+            </span>
+          </div>
+
+          <section aria-labelledby="saved-job-description-title">
+            <h3 id="saved-job-description-title">Job description</h3>
+            <div className="saved-job-details__description">
+              {guestJob.job_description}
+            </div>
+          </section>
+
+          <p className="saved-resumes__message">
+            Saved for this browser session.
+          </p>
+
+          <div className="saved-resumes__actions">
+            <Link className="saved-resumes__action" to="/">
+              Back to dashboard
+            </Link>
+          </div>
+        </article>
       )}
     </div>
   )

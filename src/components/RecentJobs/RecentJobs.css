@@ -93,6 +93,52 @@
   font-size: 10px;
   font-weight: 700;
 }
+.recent-analyses__list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.recent-analyses__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #eeedf0;
+  border-radius: 9px;
+}
+.recent-analyses__details,
+.recent-analyses__actions {
+  display: grid;
+  gap: 5px;
+}
+.recent-analyses__details strong {
+  color: #38353e;
+  font-size: 12px;
+}
+.recent-analyses__details span,
+.recent-analyses__actions span {
+  color: #85818b;
+  font-size: 10px;
+}
+.recent-analyses__actions {
+  justify-items: end;
+}
+.recent-analyses__actions a {
+  color: #654bc2;
+  font-size: 10px;
+  font-weight: 600;
+}
+.recent-jobs__session-note {
+  margin: 0 0 12px;
+  color: #85818b;
+  font-size: 10px;
+  line-height: 1.5;
+}
 @media (max-width: 560px) {
   .recent-section {
     margin-top: 32px;
@@ -102,5 +148,12 @@
   }
   .empty-state {
     min-height: 190px;
+  }
+  .recent-analyses__item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .recent-analyses__actions {
+    justify-items: start;
   }
 }

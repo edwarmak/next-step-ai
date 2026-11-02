@@ -15,10 +15,11 @@ type JobAnalysisFormProps = {
   extractionStatus: ResumeExtractionStatus
   extractionError: string
   onResumeFileChange: (file: File | null) => void
-  onSaveAnalysis?: (details: JobAnalysisDetails) => void
-  isSavingAnalysis?: boolean
-  saveAnalysisMessage?: string
-  saveAnalysisError?: string
+  onSaveJob?: (details: JobAnalysisDetails) => void
+  saveJobLabel?: string
+  isSavingJob?: boolean
+  saveJobMessage?: string
+  saveJobError?: string
 }
 
 const fieldOrder: (keyof JobAnalysisDetails)[] = [
@@ -51,10 +52,11 @@ function JobAnalysisForm({
   extractionStatus,
   extractionError,
   onResumeFileChange,
-  onSaveAnalysis,
-  isSavingAnalysis = false,
-  saveAnalysisMessage = '',
-  saveAnalysisError = '',
+  onSaveJob,
+  saveJobLabel = 'Save job',
+  isSavingJob = false,
+  saveJobMessage = '',
+  saveJobError = '',
 }: JobAnalysisFormProps) {
   const [errors, setErrors] = useState<FieldErrors>({})
   const [statusMessage, setStatusMessage] = useState('')
@@ -120,10 +122,10 @@ function JobAnalysisForm({
     )
   }
 
-  function handleSaveAnalysis() {
+  function handleSaveJob() {
     setStatusMessage('')
     if (validateAndFocus()) {
-      onSaveAnalysis?.(jobDetails)
+      onSaveJob?.(jobDetails)
     }
   }
 
@@ -240,18 +242,18 @@ function JobAnalysisForm({
       >
         Analyze Job
       </button>
-      {onSaveAnalysis && (
+      {onSaveJob && (
         <button
           className="saved-resumes__action job-analysis-form__save"
-          disabled={isSavingAnalysis || Boolean(saveAnalysisMessage)}
-          onClick={handleSaveAnalysis}
+          disabled={isSavingJob || Boolean(saveJobMessage)}
+          onClick={handleSaveJob}
           type="button"
         >
-          {isSavingAnalysis
+          {isSavingJob
             ? 'Saving job…'
-            : saveAnalysisMessage
+            : saveJobMessage
               ? 'Saved'
-              : 'Save job analysis'}
+              : saveJobLabel}
         </button>
       )}
       {statusMessage && (
@@ -259,14 +261,14 @@ function JobAnalysisForm({
           {statusMessage}
         </p>
       )}
-      {saveAnalysisMessage && (
+      {saveJobMessage && (
         <p className="job-analysis-form__status" role="status">
-          {saveAnalysisMessage}
+          {saveJobMessage}
         </p>
       )}
-      {saveAnalysisError && (
+      {saveJobError && (
         <p className="job-analysis-form__error" role="alert">
-          {saveAnalysisError}
+          {saveJobError}
         </p>
       )}
     </form>

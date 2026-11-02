@@ -105,7 +105,7 @@ function SavedJobs() {
           <div>
             <p className="eyebrow">YOUR LIBRARY</p>
             <h2 className="saved-resumes__title" id="saved-jobs-title">
-              Saved job analyses
+              Saved jobs
             </h2>
           </div>
         </div>
@@ -118,8 +118,13 @@ function SavedJobs() {
 
         {!isAuthLoading && !user && (
           <div className="saved-resumes__message">
-            <p>Sign in to view and manage jobs saved to your account.</p>
-            <Link to="/auth">Sign in</Link>
+            <p>
+              Saved Jobs can be permanently stored in your account, so you can
+              return to them whenever you sign in. Jobs kept for a guest account are temporary and do not appear here.
+            </p>
+            <Link className="saved-resumes__action" to="/auth">
+              Sign in or create an account
+            </Link>
           </div>
         )}
 

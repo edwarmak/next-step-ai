@@ -11,6 +11,7 @@ import {
   JobAnalysisPersistenceError,
   persistJobAnalysis,
 } from '../../services/jobAnalysisWorkflow'
+import { saveGuestJob } from '../../services/guestSavedJobService'
 import type { SavedResume } from '../../types/resume'
 import './JobAnalysis.css'
 
@@ -132,7 +133,7 @@ function JobAnalysis() {
     setSaveAnalysisMessage('')
   }
 
-  async function handleSaveAnalysis(details: JobAnalysisDetails) {
+  async function handleSaveJob(details: JobAnalysisDetails) {
     if (!user || saveAnalysisRequest.current) {
       return
     }
@@ -180,7 +181,8 @@ function JobAnalysis() {
         setSavedResumesRefreshKey((key) => key + 1)
         setSaveMessage('Resume saved to your account.')
       }
-      setSaveAnalysisMessage('Job analysis saved to your account.')
+      setSaveAnalysisMessage('Job saved to your account.')
+      window.dispatchEvent(new Event('job-saved'))
     } catch (error) {
       if (error instanceof JobAnalysisPersistenceError) {
         if (error.savedResume) {
@@ -208,6 +210,32 @@ function JobAnalysis() {
             : 'We couldn’t save this job analysis. Please try again.',
         )
       }
+    } finally {
+      saveAnalysisRequest.current = false
+      setIsSavingAnalysis(false)
+    }
+  }
+
+  function handleSaveGuestJob(details: JobAnalysisDetails) {
+    if (user || isAuthLoading || saveAnalysisRequest.current) {
+      return
+    }
+
+    saveAnalysisRequest.current = true
+    setIsSavingAnalysis(true)
+    setSaveAnalysisError('')
+    setSaveAnalysisMessage('')
+
+    try {
+      saveGuestJob(details)
+      setSaveAnalysisMessage('Job saved for this browser session.')
+      window.dispatchEvent(new Event('job-saved'))
+    } catch (error) {
+      setSaveAnalysisError(
+        error instanceof Error
+          ? error.message
+          : 'We couldn’t save this job for the current session.',
+      )
     } finally {
       saveAnalysisRequest.current = false
       setIsSavingAnalysis(false)
@@ -290,12 +318,19 @@ function JobAnalysis() {
         extractionStatus={activeExtractionStatus}
         extractionError={extractionError}
         onResumeFileChange={handleResumeFileChange}
-        onSaveAnalysis={
-          user && !isAuthLoading ? handleSaveAnalysis : undefined
+        onSaveJob={
+          isAuthLoading
+            ? undefined
+            : user
+              ? handleSaveJob
+              : handleSaveGuestJob
         }
-        isSavingAnalysis={isSavingAnalysis}
-        saveAnalysisMessage={saveAnalysisMessage}
-        saveAnalysisError={saveAnalysisError}
+        saveJobLabel={
+          user ? 'Save job' : 'Keep in Recent Jobs'
+        }
+        isSavingJob={isSavingAnalysis}
+        saveJobMessage={saveAnalysisMessage}
+        saveJobError={saveAnalysisError}
       />
       {resumeFile && extractionStatus === 'success' && !isAuthLoading && (
         <div className="resume-save">

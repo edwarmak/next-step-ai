@@ -5,7 +5,7 @@ import type {
 } from '../types/jobAnalysis'
 
 const JOB_ANALYSIS_COLUMNS =
-  'id,user_id,resume_id,job_title,company_name,job_description,created_at,updated_at,resume:resumes!job_analyses_resume_owner_fk(display_name)'
+  'id,user_id,resume_id,job_title,company_name,job_description,analyzed_at,created_at,updated_at,resume:resumes!job_analyses_resume_owner_fk(display_name)'
 
 type JobAnalysisRow = Omit<SavedJobAnalysis, 'resume_name'> & {
   resume: { display_name: string } | { display_name: string }[] | null
@@ -31,6 +31,23 @@ export async function listJobAnalyses(
     .select(JOB_ANALYSIS_COLUMNS)
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
+
+  if (error) {
+    throw error
+  }
+
+  return (data as JobAnalysisRow[]).map(mapJobAnalysis)
+}
+
+export async function listRecentSavedJobs(
+  userId: string,
+): Promise<SavedJobAnalysis[]> {
+  const { data, error } = await supabase
+    .from('job_analyses')
+    .select(JOB_ANALYSIS_COLUMNS)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(5)
 
   if (error) {
     throw error
