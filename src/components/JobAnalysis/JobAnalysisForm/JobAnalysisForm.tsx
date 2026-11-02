@@ -1,8 +1,10 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import type { JobAnalysisDetails } from '../../../types/jobAnalysis'
+import Icon from '../../Icon/Icon'
 import ResumeUpload, {
   type ResumeExtractionStatus,
 } from '../ResumeUpload/ResumeUpload'
+import type { ResumeAttachment } from './resumeAttachment'
 import './JobAnalysisForm.css'
 
 type FieldErrors = Partial<Record<keyof JobAnalysisDetails, string>>
@@ -15,6 +17,8 @@ type JobAnalysisFormProps = {
   extractionStatus: ResumeExtractionStatus
   extractionError: string
   onResumeFileChange: (file: File | null) => void
+  attachedResume: ResumeAttachment | null
+  onRemoveResume: () => void
   onSaveJob?: (details: JobAnalysisDetails) => void
   saveJobLabel?: string
   isSavingJob?: boolean
@@ -52,6 +56,8 @@ function JobAnalysisForm({
   extractionStatus,
   extractionError,
   onResumeFileChange,
+  attachedResume,
+  onRemoveResume,
   onSaveJob,
   saveJobLabel = 'Save job',
   isSavingJob = false,
@@ -228,13 +234,49 @@ function JobAnalysisForm({
         )}
       </div>
 
-      <ResumeUpload
-        file={resumeFile}
-        extractedText={extractedResumeText}
-        extractionStatus={extractionStatus}
-        extractionError={extractionError}
-        onFileChange={onResumeFileChange}
-      />
+      {attachedResume ? (
+        <div className="job-analysis-form__field">
+          <span className="job-analysis-form__label" id="resume-upload-label">
+            Resume <span className="job-analysis-form__optional">Optional</span>
+          </span>
+          <div
+            className="resume-upload__attached"
+            aria-labelledby="resume-upload-label"
+          >
+            <span className="resume-upload__file-icon">
+              <Icon name="file" />
+            </span>
+            <span className="resume-upload__file-details">
+              <span className="resume-upload__file-name">
+                {attachedResume.fileName}
+              </span>
+              <span className="resume-upload__file-meta">
+                {attachedResume.fileType} document
+              </span>
+            </span>
+            <span className="resume-upload__attached-status">
+              <Icon name="check" />
+              Attached
+            </span>
+            <button
+              className="resume-upload__remove"
+              onClick={onRemoveResume}
+              type="button"
+              aria-label={`Remove ${attachedResume.fileName}`}
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      ) : (
+        <ResumeUpload
+          file={resumeFile}
+          extractedText={extractedResumeText}
+          extractionStatus={extractionStatus}
+          extractionError={extractionError}
+          onFileChange={onResumeFileChange}
+        />
+      )}
 
       <button
         className="primary-button job-analysis-form__submit"

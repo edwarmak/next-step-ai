@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import JobAnalysisForm from '../../components/JobAnalysis/JobAnalysisForm/JobAnalysisForm'
+import { getResumeAttachment } from '../../components/JobAnalysis/JobAnalysisForm/resumeAttachment'
 import SavedResumeManager from '../../components/JobAnalysis/SavedResumeManager/SavedResumeManager'
 import type { ResumeExtractionStatus } from '../../components/JobAnalysis/ResumeUpload/ResumeUpload'
 import type { JobAnalysisDetails } from '../../types/jobAnalysis'
@@ -299,6 +300,11 @@ function JobAnalysis() {
     selectedSavedResume && !activeSavedResume ? '' : extractedResumeText
   const activeExtractionStatus =
     selectedSavedResume && !activeSavedResume ? 'idle' : extractionStatus
+  const attachedResume = getResumeAttachment(
+    resumeFile,
+    activeSavedResume,
+    activeExtractionStatus,
+  )
 
   return (
     <div className="job-analysis-page">
@@ -318,6 +324,10 @@ function JobAnalysis() {
         extractionStatus={activeExtractionStatus}
         extractionError={extractionError}
         onResumeFileChange={handleResumeFileChange}
+        attachedResume={attachedResume}
+        onRemoveResume={() => {
+          void handleResumeFileChange(null)
+        }}
         onSaveJob={
           isAuthLoading
             ? undefined
@@ -373,12 +383,13 @@ function JobAnalysis() {
           Using “{activeSavedResume.display_name}” from your account.
         </p>
       )}
-      <SavedResumeManager
-        onSelect={handleSelectSavedResume}
-        onDeleted={handleSavedResumeDeleted}
-        selectedResumeId={activeSavedResume?.id}
-        refreshKey={savedResumesRefreshKey}
-      />
+      {!resumeFile && !activeSavedResume && (
+        <SavedResumeManager
+          onSelect={handleSelectSavedResume}
+          onDeleted={handleSavedResumeDeleted}
+          refreshKey={savedResumesRefreshKey}
+        />
+      )}
     </div>
   )
 }
