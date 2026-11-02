@@ -50,6 +50,13 @@
   font-size: 12px;
   overflow-wrap: anywhere;
 }
+.saved-job-details .saved-resumes__actions > a.saved-resumes__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+}
 .saved-job-details__back {
   color: #654bc2;
   font-size: 12px;
