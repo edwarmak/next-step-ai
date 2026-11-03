@@ -37,6 +37,9 @@ Additional technologies and integrations may be introduced as the project develo
 
 ## 🚀 Getting Started
 
+
+# Live Deployment Link
+https://vskboxhhwxxtdbqwpjwm.supabase.co
 Follow these instructions to run the project locally.
 
 ### Prerequisites
