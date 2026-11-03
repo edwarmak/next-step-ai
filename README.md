@@ -39,7 +39,7 @@ Additional technologies and integrations may be introduced as the project develo
 
 
 ### Live Deployment Link
-https://vskboxhhwxxtdbqwpjwm.supabase.co
+[NextStep AI](https://next-step-ai-pi.vercel.app/)
 
 
 ## Follow these instructions to run the project locally.
